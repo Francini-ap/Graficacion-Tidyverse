@@ -147,10 +147,13 @@ ggplot() +
     
     )
 ```
-# El valor en la celda 13 corresponde a la suma del caudal de cada cauce anualmente
 
+
+
+##Nota:  El valor en la celda 13 corresponde a la suma del caudal de cada cauce anualmente
 
 #2.Histograma que muestre la distribución de los casos nuevos de covid en Costa Rica. Elija cuidadosamente el tamaño de los “bins”
+
 
 ```{r promedio-casosnuevos}
 # Promedio de casos nuevos por mes
