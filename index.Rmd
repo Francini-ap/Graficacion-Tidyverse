@@ -108,7 +108,7 @@ covid_filtrado
 
 ```{r pandora}
 
-#Sumar caudal Pandora por mes
+#Sumar caudal  mes
 # Selección, renombramiento, filtrado y conversión de columnas
 sumarizado_x_mes <-
   rios %>%
@@ -116,21 +116,49 @@ sumarizado_x_mes <-
   rename(fecha = fecha, caudal_pandora = pandora, caudal_banano = banano) %>%
   mutate(fecha = as.Date(fecha, format = "%d/%m/%Y")) %>%
   group_by( mes = format(fecha,"%m")) %>%
-  summarise(suma_cauda_pan = sum(caudal_pandora ), suma_cauda_ban = sum(caudal_banano))
+  summarise(suma_caudal_pandora = sum(caudal_pandora ), suma_caudal_banano = sum(caudal_banano))
 
 # Despliegue del data frame con los resultados
 sumarizado_x_mes 
 ```
 
 
-```{r}
+
+
+
+```{r ordendatos-caudal}
+sumarizado_x_mes<- data.frame(
+                 suma_caudal_pandora = c(768,632,654,640,821,682,625,753,692,716,785,755,12462),
+                suma_caudal_banano = c(1799,1824,1857,1792,1853,1758,1619,1882,1813,1850,2035,1871,32941)
+                )
+```
+
+
+
+```{r nuevosdatos-caudal}
+#Nuevos datos ordenar caudal mes y por cuenca
+nuevos_datos_caudal <- data.frame(
+                  x = rep(1:nrow(sumarizado_x_mes), 2),
+                  grupo = rep(c("suma_caudal_pandora","suma_caudal_banano"), each=13), 
+                  y = c(sumarizado_x_mes$suma_caudal_pandora, sumarizado_x_mes$suma_caudal_banano)
+)
+```
+
+
+```{r grafico-caudal}
+
 # Gráfico de barras apiladas
 ggplot(
-  sumarizado_x_mes,
-  aes(x = mes, y = suma_cauda_pan,fill =   )
+  nuevos_datos_caudal,
+  aes(x = x, y = y,  fill = grupo  )
 ) +
   geom_col(position = "dodge") +
-  coord_flip()
+  coord_flip()+
+  ggtitle("caudal de los ríos Pandora y Bananito por cada uno de los 12 meses del año,Costa Rica") +
+  xlab("Mes") +
+  ylab("Cuadal") +
+  theme_ipsum(plot_title_size = 15,
+  plot_title_face ="bold")
 ```
 
 
@@ -165,21 +193,64 @@ covid_positivos_nuevos_promedio_x_mes
       theme_ipsum()
 ```
 
+#3.Gráfico de barras agrupadas que muestre la cantidad de hombres y mujeres fallecidos por covid en Costa Rica por cada uno de los 12 meses del año.
 
 
+```{r}
+#Sumar personas fallecidas por sexo por mes
+# Selección, renombramiento, filtrado y conversión de columnas
+sumarizado_fallecidos_sexo_mes <-
+  covid %>%
+  select(FECHA, hom_fall, muj_fall) %>%
+  rename(FECHA = FECHA, mujeres_fallecidas = muj_fall, hombres_fallecidos = hom_fall) %>%
+  mutate(FECHA = as.Date(FECHA, format = "%d/%m/%Y")) %>%
+  group_by( mes = format(FECHA,"%m")) %>%
+  summarise(suma_muj_fall = sum(mujeres_fallecidas ), suma_hom_fall = sum(hombres_fallecidos))
 
-```{r rios histograma}
+# Despliegue del data frame con los resultados
+sumarizado_fallecidos_sexo_mes 
+```
 
-#Histograma Simple
-rios %>%
-ggplot ( aes (x = pandora))+
-  geom_histogram ()
 
+```{r -ordenar datos covid}
+
+#Ordenar datos COVID 19 por mes y sexo
+
+sumarizado_fallecidos_sexo_mes <- data.frame(
+                 suma_muj_fall = c(28265,28663, 33380, 34671, 42664,50512,58447,66182,38315,13629,17780,22933),
+                 suma_hom_fall = c(46826,47764,56004,57756,69826,81968,94056,106142,60911,22337,29062,37934)
+)
 ```
 
 
 
+```{r nuevos-datos-ordenados-covid}
 
+#Nuevod datos ordenar COVID 19 por mes y sexo
+nuevos_datos2 <- data.frame(
+                  x = rep(1:nrow(sumarizado_fallecidos_sexo_mes), 2),
+                  grupo = rep(c("suma_muj_fall","suma_hom_fall"), each=12), 
+                  y = c(sumarizado_fallecidos_sexo_mes$suma_muj_fall, sumarizado_fallecidos_sexo_mes$suma_hom_fall)
+)
+
+```
+
+
+```{r grafico-covid}
+# Gráfico de barras apiladas
+ggplot(
+  nuevos_datos2,
+  aes(x = x, y = y,  fill = grupo  )
+) +
+  geom_col(position = "dodge") +
+  coord_flip()+
+  ggtitle("Sumar personas fallecidas por sexo por mes, por COVID-19 en Costa Rica") +
+  xlab("Mes") +
+  ylab("Personas") +
+  theme_ipsum(plot_title_size = 15,
+  plot_title_face ="bold")
+  
+```
 
 
 
